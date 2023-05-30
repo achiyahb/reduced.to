@@ -39,8 +39,8 @@ export class ShortenerService {
 
   /**
    * Checks if the url has already been shortened by a using a Regular Expression.
-   * @param {String} shortUrl The short url
-   * @returns {Boolean} Returns a boolean
+   * @param {string} shortUrl The short url
+   * @returns {boolean} Returns a boolean
    */
   isUrlAlreadyShortened = (shortUrl: string): boolean => {
     const domainRegex = new RegExp(this.appConfigService.getConfig().front.domain);
@@ -49,7 +49,7 @@ export class ShortenerService {
 
   /**
    * Generating the short url
-   * @returns {String} Returns a random 5 characters url
+   * @returns {string} Returns a random 5 characters url
    */
   generateShortenedUrl = (): string => {
     return Math.random().toString(36).substring(2, 7);
@@ -67,9 +67,9 @@ export class ShortenerService {
 
   /**
    * Add the short url to the server routes.
-   * @param {String} originalUrl The original url.
-   * @param {String} shortenedUrl The shorten url.
-   * @param {String} expirationTime The expiration time.
+   * @param {string} originalUrl The original url.
+   * @param {string} shortenedUrl The shorten url.
+   * @param {string} expirationTime The expiration time.
    */
   addUrl = async (originalUrl: string, shortenedUrl: string, expirationTime?: Date) => {
     const isShortenedUrlAvailable = await this.isShortenedUrlAvailable(shortenedUrl);
@@ -126,7 +126,7 @@ export class ShortenerService {
    * @param {string} newUrl The new short URL.
    * @returns {Promise<any>} Returns the created db URL.
    */
-  async createDbUrl(body: ShortenerDto, user: UserContext, newUrl: string) {
+  createDbUrl = async (body: ShortenerDto, user: UserContext, newUrl: string) => {
     return await this.prisma.url.create({
       data: {
         shortenedUrl: newUrl,
@@ -136,14 +136,14 @@ export class ShortenerService {
         expirationTime: body.expirationTime,
       },
     });
-  }
+  };
 
   /**
    * Retrieves the original URL associated with a given short URL from the database.
    * @param {string} shortenedUrl - The short URL.
    * @returns {Promise<string|null>} - The original URL if the original URL is found and valid, otherwise null.
    */
-  async getUrlFromDb(shortenedUrl: string) {
+  getUrlFromDb = async (shortenedUrl: string) => {
     const url = await this.prisma.url.findFirst({
       where: {
         shortenedUrl,
@@ -153,7 +153,7 @@ export class ShortenerService {
       return null;
     }
     return url ? url.originalUrl : null;
-  }
+  };
 
   /**
    * Creates a shortened URL for a user based on the provided data.
@@ -161,9 +161,9 @@ export class ShortenerService {
    * @param {ShortenerDto} body - The request body containing the original URL and optional expiration time.
    * @returns {Promise<{ newUrl: string }>} - Returns an object containing the newly created short URL.
    */
-  async createUsersShortenedUrl(user: UserContext, body: ShortenerDto) {
+  createUsersShortenedUrl = async (user: UserContext, body: ShortenerDto) => {
     const { newUrl } = await this.createShortenedUrl(body.originalUrl, new Date(body.expirationTime));
     await this.createDbUrl(body, user, newUrl);
     return { newUrl };
-  }
+  };
 }
