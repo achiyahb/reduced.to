@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, UseGuards } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module';
@@ -12,7 +12,9 @@ import { UniqueConstraint } from './shared/decorators/unique/unique.decorator';
 import { CustomThrottlerGuard } from './shared/guards/custom-throttler/custom-throttler';
 import { ShortenerModule } from './shortener/shortener.module';
 import { UsersModule } from './users/users.module';
+import { UrlsModule } from './urls/urls.module';
 
+@UseGuards()
 @Module({
   imports: [
     AppConfigModule,
@@ -29,6 +31,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     NovuModule,
     UsersModule,
+    UrlsModule,
   ],
   providers: [
     PrismaService,
